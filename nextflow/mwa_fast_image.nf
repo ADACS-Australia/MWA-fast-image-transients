@@ -63,6 +63,14 @@ if ( params.obsids == 'no_obsid' ) {
     println("Please input the observation IDs you would like to process with --obsids.")
     exit(0)
 }
+if ( params.calid == 'no_obsid' ) {
+    println("Please input the calibration observation ID you would like to process with --calid.")
+    exit(0)
+}
+if ( params.cal_bin == '' ) {
+    println("Please input the calibration solution binary with --cal_bin.")
+    exit(0)
+}
 obsids = Channel.from(params.obsids.toString().split(","))
 
 process apply_cal {
@@ -80,51 +88,6 @@ process apply_cal {
     applysolutions ${params.data_dir}/${obsid}.ms ${solution_bin}
     """
 }
-
-
-// process wsclean_split {
-//     """
-//     echo "##WSCLEAN 28s"
-//     for i in `seq 0 3`;
-//     do
-//         j=$((8+56*i))
-//         k=$((j+56))
-
-//     echo "##WSCLEAN for 5s images"
-//     if [[ ${dataintervals} -eq 240 ]]
-//     then
-//         # 240 -> flag first 4s and last 6s
-//         #intervals='-interval 8 229'
-//         start=8
-//         end=218 #(note that interval 218 to 228 will be imaged. Only 0.5s interval 229 is not imaged)
-//     else
-//         # 224 -> process as below
-//         #intervals=''
-//         end=0
-//         end=224
-//     fi
-//     for i in `seq ${start} 10 ${end}`;
-//     do
-//         j=$((i+10))
-
-//     echo "##WSCLEAN for 0.5s images"
-//     if [[ ${dataintervals} -eq 240 ]]
-//     then
-//         # 240 -> flag first 4s and last 6s
-//         #intervals='-interval 8 229'
-//         start=8
-//         end=228 #(note that interval 228 to 229 is imageable, which is done by the code below)
-//     else
-//         # 224 -> process as below
-//         #intervals=''
-//         end=0
-//         end=224
-//     fi
-//     for i in `seq ${start} ${end}`;
-//     do
-//         j=$((i+1))
-//     """
-// }
 
 
 process wsclean {
@@ -225,5 +188,6 @@ workflow {
         // Go back to the label just being obsid then it's ready to be crossed
         .map{ it -> [ it[0].split("_")[0], [ it[0], it[1] ] ] }
         // Reformate it to the tuple required
-        ).map{ it -> [it[1][1][0], it[0][1], it[1][1][1]] } )
+        ).map{ it -> [it[1][1][0], it[0][1], it[1][1][1]] }
+    )
 }
