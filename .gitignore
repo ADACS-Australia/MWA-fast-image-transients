@@ -3,3 +3,4 @@ queue/logs/*
 queue/slurm*.out
 db/MWA-GRB.sqlite.*
 .profile
+.nextflow*

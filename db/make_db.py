@@ -76,7 +76,7 @@ def main():
     conn = sqlite3.connect(dbfile)
     cur = conn.cursor()
     for cmd in schema.split(';'):
-        print cmd + ';'
+        print(cmd + ';')
         cur.execute(cmd)
     conn.close()
 
